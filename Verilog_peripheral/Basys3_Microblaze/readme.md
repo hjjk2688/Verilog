@@ -74,6 +74,8 @@
 
 ### export vitis file ( Using bitstream file)
 
+#### Hello world
+
 <img width="459" height="154" alt="image" src="https://github.com/user-attachments/assets/baeb52d8-b3c0-49c7-a0d6-2caebc51aef4" />
 
 <img width="1050" height="882" alt="image" src="https://github.com/user-attachments/assets/a404bfcd-47c6-4626-9215-d9c28af414af" />
@@ -90,5 +92,48 @@
 
 <img width="924" height="512" alt="image" src="https://github.com/user-attachments/assets/721e8158-b312-4ead-b06b-1b816f61db5c" />
 
+<img width="967" height="777" alt="image" src="https://github.com/user-attachments/assets/24ebce27-1241-4174-92b3-4ed1a63eeb7a" />
 
+<img width="969" height="766" alt="image" src="https://github.com/user-attachments/assets/4ec92dfa-faed-4dbc-948d-b410d70cd5d9" />
 
+<img width="966" height="774" alt="image" src="https://github.com/user-attachments/assets/03266609-fb60-4c62-be8e-fcb2a64b625b" />
+
+<img width="486" height="486" alt="image" src="https://github.com/user-attachments/assets/abfab584-1b91-4959-8a9d-9b8e2e9dafa7" />
+
+<img width="807" height="277" alt="image" src="https://github.com/user-attachments/assets/d254ce7a-7b5c-4e4c-869a-a28356e2a9a7" />
+
+<img width="447" height="476" alt="image" src="https://github.com/user-attachments/assets/f80a68d1-40d3-4018-bed1-8ff7f1a54779" />
+
+<img width="610" height="653" alt="image" src="https://github.com/user-attachments/assets/1ea1da01-c93f-4d7d-9ec0-5f7dbc1d139f" />
+
+<img width="740" height="448" alt="image" src="https://github.com/user-attachments/assets/c53685d5-0979-44c8-9254-dfd517d06f95" />
+
+* baud rate : 9600
+
+<img width="513" height="482" alt="image" src="https://github.com/user-attachments/assets/eda6c2ff-36a6-48dc-a533-b9363f38e5ca" />
+
+* TERA TREAM Result
+  
+<img width="521" height="169" alt="image" src="https://github.com/user-attachments/assets/40106d3f-2190-4468-9ef4-f019acfeb8b7" />
+
+### LED 제어
+
+<img width="953" height="773" alt="image" src="https://github.com/user-attachments/assets/995a0f2e-fae3-4fda-b8ac-a67658353d81" />
+
+<img width="964" height="778" alt="image" src="https://github.com/user-attachments/assets/f1458cd7-2439-4925-b78a-67d29376c7ce" />
+
+<img width="969" height="774" alt="image" src="https://github.com/user-attachments/assets/92bc2197-ea4b-43d9-ac41-92fa1554c292" />
+
+<img width="1203" height="966" alt="image" src="https://github.com/user-attachments/assets/2e61297e-a18c-4631-b5e3-117477c8badf" />
+
+<img width="1878" height="1022" alt="image" src="https://github.com/user-attachments/assets/e9f3cff9-27f4-4112-87ff-0656235c8e93" />
+
+<img width="602" height="435" alt="image" src="https://github.com/user-attachments/assets/0984cf3e-b0b1-433d-9c2b-f56a8a3a480f" />
+
+<img width="529" height="539" alt="image" src="https://github.com/user-attachments/assets/79e83573-ccda-4c6e-9db3-80d81072c03a" />
+
+<img width="902" height="513" alt="image" src="https://github.com/user-attachments/assets/9adaba64-5abb-4ea5-b611-d9bafb4d20c9" />
+
+* TERA TERAM Result
+
+<img width="673" height="238" alt="image" src="https://github.com/user-attachments/assets/ddf1fc1c-3bab-40bc-88db-2147af280c1b" />
