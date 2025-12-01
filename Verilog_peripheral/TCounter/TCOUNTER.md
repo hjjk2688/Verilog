@@ -2,7 +2,7 @@
 - Using zyboz720 board
 - ZYNQ7 
 ---
-## TCOUNTER Module 
+## Add TCOUNTER Module 
 
 <img width="800" height="400" alt="image" src="https://github.com/user-attachments/assets/c0663004-ef8f-4464-b61b-b79b36f16e33" />
 
@@ -29,7 +29,10 @@
 <img width="919" height="615" alt="image" src="https://github.com/user-attachments/assets/48faf705-9cb0-43dd-9465-8efb63d765ba" />
 
 - ip repo => hdl 생성
-- src 수정
+
+### IP SCR 수정
+
+<img width="904" height="508" alt="image" src="https://github.com/user-attachments/assets/6028e089-aee1-4b54-a908-57c7f1c539cd" />
 
 <img width="492" height="385" alt="image" src="https://github.com/user-attachments/assets/485a99c7-3b65-48c6-9ac7-6c588750d9b4" />
 
