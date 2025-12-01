@@ -178,29 +178,49 @@ endmodule
 
 ### vitis code
 
-  1. 1 << 31 을 하는 이유
+```C
 
+typedef struct _MYIP_TIMER {
+	volatile uint32_t slv_reg0;
+	volatile uint32_t slv_reg1;
+	volatile uint32_t slv_reg2;
+	volatile uint32_t slv_reg3;
+	volatile uint32_t slv_reg4;
+	volatile uint32_t slv_reg5;
+	volatile uint32_t slv_reg6;
+	volatile uint32_t slv_reg7;
+	volatile uint32_t slv_reg8;
+	volatile uint32_t slv_reg9;
+	volatile uint32_t slv_reg10;
+	volatile uint32_t slv_reg11;
+}MYIP_TIMER;
 
-  결론부터 말하면, 그것은 타이머의 제어 비트(Control Bit)를 설정하는 것입니다. 가장 가능성이 높은 것은
-  타이머를 활성화(Enable)시키는 비트입니다.
+// !-- 아래 내용 코드는 같음 --!
 
+   MYIP_TIMER * myip_timer = (MYIP_TIMER *)XPAR_MYIP_TCOUNTER2_0_S00_AXI_BASEADDR;
 
-   - tcReg[0] 레지스터는 단순히 주기(ARR) 값만 저장하는 공간이 아니라, 타이머의 동작을 제어하는 여러
-     설정값들을 함께 담고 있는 제어/상태 레지스터(Control/Status Register)일 가능성이 높습니다.
-   - 이런 레지스터는 보통 32비트 중 일부 비트(예: 상위 비트들)는 제어용 플래그(Flag)로, 나머지 비트(예: 하위
-     비트들)는 실제 데이터 값(주기 등)을 저장하는 용도로 나뉘어 있습니다.
+   myip_timer->slv_reg2 = (1 << 31) | (100000000- 1);
+   myip_timer->slv_reg3 = (80000000/2)-1; //duty : 40%
+   myip_timer->slv_reg4 = (1 << 31) | (100000000 - 1);
+   myip_timer->slv_reg5 = (60000000/2)-1; // duty : 30%
+   myip_timer->slv_reg6 = (1 << 31) | (100000000 - 1);
+   myip_timer->slv_reg7 = (40000000/2)-1; // duty : 20 %
+   myip_timer->slv_reg8 = (1 << 31) | (100000000 - 1);
+   myip_timer->slv_reg9 = (20000000/2)-1; // duty : 10 %
+   myip_timer->slv_reg10 = (1 << 31) | (100000000 - 1);
+   myip_timer->slv_reg11 = (10000000/2)-1; // duty : 5%
+```
+* 1 << 31 을 하는 이유
 
-  코드를 분해해 보면 다음과 같습니다.
+1. `wire cnt_en = top_in[31];`
+  - C 코드에서 tcReg[0]으로 전달된 32비트 값(top_in)의 31번째 비트를 cnt_en이라는 신호로 사용하고 있습니다.
+2. `else if(cnt_en)`
+  - always 블록 안을 보면, 카운터 cnt가 1씩 증가하는 동작은 cnt_en 신호가 1일 때만 수행됩니다.
+  - 만약 cnt_en이 0이라면, 카운터는 계속 0으로 리셋(else cnt<=0;)되어 멈춰있게 됩니다.
 
+C 코드에서 1 << 31 연산을 하지 않으면, cnt_en이 항상 0이 되어 카운터가 전혀 동작하지 않게 됩니다.
+1 << 31은 카운터를 '켜는(Enable)' 스위치 역할을 하는 필수적인 코드입니다.
 
-   - `1 << 31`: 32비트 정수 1(0x00000001)을 왼쪽으로 31번 비트 이동시키는 연산입니다. 결과적으로 최상위
-     비트(MSB, 31번 비트)만 1이 되고 나머지는 모두 0이 됩니다 (0x80000000). 이것이 바로 'Enable' 플래그를
-     켜는 역할을 합니다.
-   - `100000000 - 1`: 이것이 실제 PWM의 한 주기를 결정하는 주기(Period) 값입니다.
-   - `|` (Bitwise OR 연산): 두 값을 합칩니다. 즉, 주기 값을 설정하는 동시에, 31번 비트를 1로 만들어 타이머를
-     '시작'시키는 것입니다.
+<img width="602" height="449" alt="image" src="https://github.com/user-attachments/assets/b7a84d35-cde6-4348-8029-d95c9c9f63cb" />
 
-
-  > 요약: `tcReg[0]` 레지스터에 주기 값을 써넣는 동시에, 31번 Enable 비트를 1로 세팅하여 타이머를
-  동작시키는 것입니다.
-
+- 할당된 LED가 duty에 따라서 스르륵 on/off 된다.
