@@ -122,6 +122,12 @@ Address 0x40000000
 * 이미 만들어진 외부 IP Module 사용하기
   - Project Settings → IP → Repository에서 생성된 IP가 있는 디렉터리를 추가
 
+#### Block Design
+
+<img width="1268" height="527" alt="image" src="https://github.com/user-attachments/assets/4d5c271b-532c-4c84-8418-06df17269587" />
+
+*system clk = 100M Hz
+
 <img width="1030" height="843" alt="image" src="https://github.com/user-attachments/assets/f2303cc3-9a42-4b1d-8d6f-24e270e243d9" />
 
 <img width="593" height="232" alt="image" src="https://github.com/user-attachments/assets/4c4313a1-7a2f-4621-b381-635132cc7d8a" />
