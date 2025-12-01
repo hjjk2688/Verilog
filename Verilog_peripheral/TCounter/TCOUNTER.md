@@ -44,5 +44,10 @@
 <img width="1250" height="507" alt="image" src="https://github.com/user-attachments/assets/40c6aa17-7e54-4408-a20e-8143237f8479" />
 
 
+### lED GPIO 추가
+
+<img width="683" height="430" alt="image" src="https://github.com/user-attachments/assets/87e5a6db-01dd-4c7f-a585-6ded3846af19" />
+
+
 
 
