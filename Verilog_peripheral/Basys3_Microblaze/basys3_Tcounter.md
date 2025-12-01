@@ -126,4 +126,16 @@ Address 0x40000000
 
 <img width="593" height="232" alt="image" src="https://github.com/user-attachments/assets/4c4313a1-7a2f-4621-b381-635132cc7d8a" />
 
+<img width="775" height="518" alt="image" src="https://github.com/user-attachments/assets/6b1c04f4-0278-4064-bdc1-a7899d18edf9" />
+
+* IP Module code
+
+- myip_tcounter2_v1_0_S00_AXI.v
+<img width="426" height="89" alt="image" src="https://github.com/user-attachments/assets/333b302b-9fcc-45f7-946d-23d642540daa" />
+
+<img width="574" height="168" alt="image" src="https://github.com/user-attachments/assets/078191bd-4ec2-414f-b39a-c0add47841c1" />
+
+- myip_tcounter2_v1_0.v
+<img width="429" height="83" alt="image" src="https://github.com/user-attachments/assets/596bf187-8667-40a7-bf07-4fe8d95b5bd2" />
+<img width="402" height="63" alt="image" src="https://github.com/user-attachments/assets/fa52e52e-392c-4e48-947b-dc898f089f0e" />
 
