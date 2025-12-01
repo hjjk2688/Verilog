@@ -177,7 +177,16 @@ endmodule
 - 참고 : https://github.com/hjjk2688/Verilog/edit/main/Verilog_basic/c.md
 
 ### vitis code
-
+```C
+   unsigned int * tcReg = (unsigned int *)XPAR_MYIP_TCOUNTER2_0_S00_AXI_BASEADDR;
+   tcReg[0] = (1 << 31) | (100000000 - 1);
+   tcReg[1] = (100000000/2)-1;
+```
+- point 배열을 이용해 주소로 해석
+- [0] => baseaddr
+- [1] => basedaddr + 4
+- 레지스터 주소 체계를 따름
+  
 ```C
 
 typedef struct _MYIP_TIMER {
@@ -224,3 +233,7 @@ C 코드에서 1 << 31 연산을 하지 않으면, cnt_en이 항상 0이 되어 
 <img width="602" height="449" alt="image" src="https://github.com/user-attachments/assets/b7a84d35-cde6-4348-8029-d95c9c9f63cb" />
 
 - 할당된 LED가 duty에 따라서 스르륵 on/off 된다.
+
+## 참고
+PWM , C 포인트 배열
+https://github.com/hjjk2688/Verilog/blob/main/Verilog_basic/c.md
