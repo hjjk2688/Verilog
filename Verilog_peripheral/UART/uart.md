@@ -29,3 +29,24 @@
   - 문제점 : scanf는 블로킹(Blocking) 함수입니다. 즉, 사용자가 터미널에 값을 입력하고 Enter 키를 누를 때까지 프로그램의 모든 동작이 그 자리에서 멈춥니다.
 2. 인터럽트(Interrupt) 기반의 비동기 수신
   - 참고: `sscanf`는 문자열로부터 형식화된 입력을 읽는 함수로, 블로킹되지 않기 때문에 인터럽트 방식과 함께 사용하기에 매우 좋습니다.
+---
+
+## uart interrupt
+* bulid faile erro
+
+<img width="668" height="223" alt="image" src="https://github.com/user-attachments/assets/82f4d95a-c841-40e7-8f19-0ea0562f7a03" />
+
+```
+c:/xilinx/vitis/2022.2/gnu/microblaze/nt/x86_64-oesdk-mingw32/usr/bin/microblaze-xilinx-elf/../../libexec/microblaze-xilinx-elf/gcc/microblaze-xilinx-elf/11.2.0/real-ld.exe: region `microblaze_0_local_memory_ilmb_bram_if_cntlr_Mem_microblaze_0_local_memory_dlmb_bram_if_cntlr_Mem' overflowed by 14632 bytes
+
+14632 overflow 발생
+
+```
+* microblaze local memoery size 가 부족한 에러가 나와서 변경해줘야됨
+
+<img width="880" height="344" alt="image" src="https://github.com/user-attachments/assets/df11172d-f540-42bb-a731-520a135d12d5" />
+
+* vitis에서 memory size 확인방법 : application -> src -> lscript.ld
+* microblaze process를 생성할떄 localmomoery를 지정해주면 바꿀수없어서 지우고 다시 생성해야됨(locl_memory 부분까지 함꼐 제거)
+
+
