@@ -49,4 +49,31 @@ c:/xilinx/vitis/2022.2/gnu/microblaze/nt/x86_64-oesdk-mingw32/usr/bin/microblaze
 * vitis에서 memory size 확인방법 : application -> src -> lscript.ld
 * microblaze process를 생성할떄 localmomoery를 지정해주면 바꿀수없어서 지우고 다시 생성해야됨(locl_memory 부분까지 함꼐 제거)
 
+### 상세 코드 아래 참조
+https://github.com/hjjk2688/Verilog/edit/main/Verilog_peripheral/UART/code_explan.md
 
+---
+
+## 결과
+#### TERA TERM
+
+<img width="333" height="58" alt="image" src="https://github.com/user-attachments/assets/6afd880f-b0ef-4b19-bf8f-a39ebe24a569" />
+
+#### Basys3 Board
+  
+<img width="600" height="500" alt="image" src="https://github.com/user-attachments/assets/7b7718aa-529e-40e5-9798-6aa9cec21d74" />
+
+- default : LED 부분 PWM 으로 스스륵 ON / OFF
+- RX LED 제어 부분 : 'w' 입력 시 on / 's' 입력 시 off
+
+- 'w' 입력
+
+<img width="592" height="444" alt="image" src="https://github.com/user-attachments/assets/d7eab140-1e61-41c2-912b-efc91472b08c" />
+
+
+- 's ' 입력
+
+<img width="594" height="443" alt="image" src="https://github.com/user-attachments/assets/d6aea8cd-c1a1-4c7a-afd8-64e2c70169fa" />
+
+
+> default 상태가 계속 동작하고 UART rx 수신 될 때 blanking이 발생하지않고 함께 동작 한다.
