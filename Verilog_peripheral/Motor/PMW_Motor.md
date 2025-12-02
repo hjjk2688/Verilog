@@ -65,3 +65,95 @@ G  -> G
   motorReg[7] = 0;
 
 ```
+---
+
+### code 수정 사항
+```
+  motorReg[8] = (1 << 31) | period_val; // 우앞
+  motorReg[9] = duty_val;
+  motorReg[10] = 0;
+  motorReg[11] = 0;
+
+  motorReg[12] = (1 << 31) | period_val; // 좌앞
+  motorReg[13] = duty_val;
+  motorReg[14] = 0;
+  motorReg[15] = 0;
+
+  motorReg[0] = (1 << 31) | period_val;  // 좌뒤
+  motorReg[1] = duty_val;
+  motorReg[2] = 0;
+  motorReg[3] = 0;
+
+  motorReg[4] = (1 << 31) | period_val; // 우뒤
+  motorReg[5] = duty_val;
+  motorReg[6] = 0;
+  motorReg[7] = 0;
+```
+- 중복되는 부분을 함수로 변경
+```
+void SetMotor(int motor_idx, int dir, unsigned int period, unsigned int duty) {
+    int base = motor_idx * 4;
+    if (dir == 1) { // 전진
+        motorReg[base] = (1 << 31) | period;
+        motorReg[base+1] = duty;
+        motorReg[base+2] = 0;
+        motorReg[base+3] = 0;
+    }
+    else if(dir == 2){ // 후진
+        motorReg[base] = 0;
+        motorReg[base+1] = 0;
+        motorReg[base+2] = (1 << 31) | period;
+        motorReg[base+3] = duty;
+    }
+
+    else if(dir == 0){ // 정지
+        motorReg[base] = 0;
+        motorReg[base+1] = 0;
+        motorReg[base+2] = 0;
+        motorReg[base+3] = 0;
+    }
+}
+
+void forward(unsigned int period, unsigned int duty) {
+    SetMotor(2, 1, period, duty); // 우앞
+    SetMotor(3, 1, period, duty); // 좌앞
+    SetMotor(0, 1, period, duty); // 좌뒤
+    SetMotor(1, 1, period, duty); // 우뒤
+}
+
+void backward(unsigned int period, unsigned int duty) {
+    SetMotor(2, 2, period, duty); // 우앞
+    SetMotor(3, 2, period, duty); // 좌앞
+    SetMotor(0, 2, period, duty); // 좌뒤
+    SetMotor(1, 2, period, duty); // 우뒤
+}
+
+void left(unsigned int period, unsigned int duty) {
+    SetMotor(2, 2, period, duty); // 우앞
+    SetMotor(3, 1, period, duty); // 좌앞
+    SetMotor(0, 1, period, duty); // 좌뒤
+    SetMotor(1, 2, period, duty); // 우뒤
+}
+
+void right(unsigned int period, unsigned int duty) {
+    SetMotor(2, 1, period, duty); // 우앞
+    SetMotor(3, 2, period, duty); // 좌앞
+    SetMotor(0, 2, period, duty); // 좌뒤
+    SetMotor(1, 1, period, duty); // 우뒤
+}
+
+void stop(unsigned int period, unsigned int duty) {
+    SetMotor(2, 0, period, duty); // 우앞
+    SetMotor(3, 0, period, duty); // 좌앞
+    SetMotor(0, 0, period, duty); // 좌뒤
+    SetMotor(1, 0, period, duty); // 우뒤
+}
+```
+<img width="511" height="81" alt="image" src="https://github.com/user-attachments/assets/5fb7361a-9d71-4bac-9fde-462842630fa9" />
+
+속도 변경: duty 0.5% , minmum speed 제한 : duty 25%
+
+### 결론
+- w 입력 시 duty 가 변견되어 속도가 점점 증가한다. (최대 period_val => 100%)
+- s 입력 시  duty 가 변경되어 속도가 점점 감소한다. (최저 min_duty_val)
+- a 입력 시 left / d 입력 시 right / f 입력 시 stop
