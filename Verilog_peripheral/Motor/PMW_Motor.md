@@ -152,8 +152,28 @@ void stop(unsigned int period, unsigned int duty) {
 <img width="511" height="81" alt="image" src="https://github.com/user-attachments/assets/5fb7361a-9d71-4bac-9fde-462842630fa9" />
 
 속도 변경: duty 0.5% , minmum speed 제한 : duty 25%
+---
 
 ### 결론
+<img width="596" height="443" alt="image" src="https://github.com/user-attachments/assets/1208cdd0-a3a5-4c58-8086-29469921aeb2" />
+
+```text
 - w 입력 시 duty 가 변견되어 속도가 점점 증가한다. (최대 period_val => 100%)
 - s 입력 시  duty 가 변경되어 속도가 점점 감소한다. (최저 min_duty_val)
 - a 입력 시 left / d 입력 시 right / f 입력 시 stop
+```
+<img width="475" height="306" alt="image" src="https://github.com/user-attachments/assets/9b1c85d5-6d85-4a99-9b66-6d8689941c51" />
+
+- 속도 증가
+
+<img width="800" height="487" alt="image" src="https://github.com/user-attachments/assets/6c63fee7-6ed2-4d1f-8099-fbc3020c4ff9" />
+
+- 속도 감소 ( min_duty_val 까지 제한)
+
+<img width="274" height="126" alt="image" src="https://github.com/user-attachments/assets/06ce0f8f-715f-42f5-bb74-b9616497e04e" />
+
+- 좌,와 이동은 이전 속도(duty) 를 따라감 
+
+<img width="123" height="25" alt="image" src="https://github.com/user-attachments/assets/e6f083ef-0bad-45c7-a003-d841cbf2dcc8" />
+
+- f 입력 시 정지
