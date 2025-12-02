@@ -53,7 +53,7 @@ typedef struct _MYIP_TIMER {
 
 int main () 
 {
-   static XIntc intc;
+   static XIntc intc; // AXI Interrupt Controller (INTC) IP를 위한 드라이버가 정의한 구조체(struct) 타입
    Xil_ICacheEnable();
    Xil_DCacheEnable();
    print("---Entering main---\n\r");
