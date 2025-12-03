@@ -76,4 +76,15 @@ set_property -dict { PACKAGE_PIN W4   IOSTANDARD LVCMOS33 } [get_ports {ANout[0]
 ---
 
 ## code
-Basys3 보드는 Common Anode 방식이라 실제로는 0을 주어야 LED가 켜집니다
+- 출력을 반전 시키는 이유
+```text
+assign {a,b,c,d,e,f,g} = ~decoder_outputs;
+```
+- Basys3 보드는 Common Anode 방식이라 실제로는 0을 주어야 LED가 켜집니다. 그래서 마지막 줄에서 ~ 연산자를 사용해 1단계에서 만든 모든 신호를 한꺼번에 뒤집어 주는 것입니다.
+
+* 예시 (숫자 '1' 출력):
+1. decoder_outputs (Active-High) = 7'b0110000
+2. ~decoder_outputs (Active-Low) = 7'b1001111
+3. 최종적으로 {a,b,c,d,e,f,g} 에는 7'b1001111이 출력되어, b와 c에만 0이 인가되므로 숫자 '1'이 정상적으로 표시됩니다.
+
+**사람이 보기 쉽게 active high(1)로 표시 하지만 실제로는 active low(0) 이기 때문에 헷갈릴수있다. 위에 진리표에서도 1일때 켜진다고 되어있지만 회로적으로 0일때 켜진다.**
