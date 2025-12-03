@@ -10,3 +10,6 @@
 <img width="1639" height="330" alt="image" src="https://github.com/user-attachments/assets/59a3ae1d-c40f-438b-b620-5433a87b2a98" />
 
 <img width="1631" height="386" alt="image" src="https://github.com/user-attachments/assets/02029666-b715-4262-b8fb-7f00e10723a6" />
+
+---
+7_Segment code는 4_digit_display 사용
