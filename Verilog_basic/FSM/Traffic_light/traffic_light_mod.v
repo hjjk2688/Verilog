@@ -37,7 +37,7 @@ module traffic_light_mod(
         else begin
             curr_mod <= mod;
             curr_state <= next_state;
-            //클럭 만드는 부분에 이렇게 해줄지 생각못함
+         
         end
     end
 
