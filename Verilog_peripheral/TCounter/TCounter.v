@@ -15,9 +15,12 @@ module TCounter(
         begin : CNT_MOD
             if(RSTn==0) cnt<=0;
             else if(cnt_en) begin
-                cnt<=cnt+1;
-                if(cnt >= top)
-                cnt <= 0;
+                if (cnt >= top) begin
+                    cnt <= 0;
+                end
+                else begin
+                    cnt<=cnt+1;
+                end
             end
             else cnt<=0;
         end
