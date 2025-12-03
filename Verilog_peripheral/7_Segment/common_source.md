@@ -3,6 +3,7 @@
 7세그먼트 디스플레이는 여러 개의 LED로 구성되어 있으며, 이 LED들을 효율적으로 제어하기 위해 공통 단자로 묶는 방식에 따라 '공통 애노드'와 '공통 캐소드'로 나뉩니다. 두 방식은 제어 신호의 논리가 정반대이므로 정확히 이해하는 것이 중요합니다.
 
 ---
+<img width="495" height="217" alt="image" src="https://github.com/user-attachments/assets/e2699cb8-f50d-4465-8269-7ac115d92662" />
 
 ## 1. 공통 애노드 (Common Anode)
 
