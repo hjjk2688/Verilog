@@ -135,3 +135,6 @@ binary_inputs ---> |  4개의 BCD7SEG  | ---> S0, S1, S2, S3 (모두 같은 값)
            +-----------------+
 ```
 
+---
+### 순서서
+BCD7SEG => BCD_CNT(CLK 에따라 COUNT +1 ) => 4_Digit_Display (스위치로 각자리 표시)
