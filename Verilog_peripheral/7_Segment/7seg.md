@@ -6,6 +6,7 @@
 
 - `seg` (모양): 공통 애노드(+3.3V)에 연결되어 있으므로, 반대쪽에서 0을 줘야 켜진다. (common anode)
 -  `an` (자리): 0을 줘야 켜지는 전자 스위치(트랜지스터)를 제어하므로, 0을 줘야 해당 자리가 선택된다. (active low)
+* Common anode, Common Cathode 설명 참조 : https://github.com/hjjk2688/Verilog/edit/main/Verilog_peripheral/7_Segment/common_source.md
 
 ```Verilog
 module BCD_CNT(
