@@ -72,4 +72,8 @@ set_property -dict { PACKAGE_PIN V4   IOSTANDARD LVCMOS33 } [get_ports {ANout[1]
 set_property -dict { PACKAGE_PIN W4   IOSTANDARD LVCMOS33 } [get_ports {ANout[0]}]
 ```
 - ANout 값으로 seg 자릿수를 선택한다.
-  
+
+---
+
+## code
+Basys3 보드는 Common Anode 방식이라 실제로는 0을 주어야 LED가 켜집니다
