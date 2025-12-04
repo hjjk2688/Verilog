@@ -12,4 +12,8 @@
 <img width="1631" height="386" alt="image" src="https://github.com/user-attachments/assets/02029666-b715-4262-b8fb-7f00e10723a6" />
 
 ---
-7_Segment code는 4_digit_display 사용
+### 결과
+
+- 7_Segment code는 4_digit_display 사용
+
+
