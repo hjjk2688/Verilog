@@ -1,3 +1,5 @@
+`timescale 1ns / 1ps
+
 module UltrasonicDistanceFSM(
     input clk, rst,
     output trig,
@@ -43,7 +45,7 @@ module UltrasonicDistanceFSM(
 
     wire trigEn;
    // assign led_1hz = (cnt1s == (100_000_000 - 1))? 1: 0; 
-    assign led_1hz = (cnt1s == (50_000_000 - 1))? 1: 0; // 트리거 가 멈추는 문제를 해결하기위해 신호 분리
+   // assign led_1hz = (cnt1s < ((100_000_000 - 1) /2 ))? 1: 0; 
     assign trigEn = (cnt1s == (100_000_000 - 1))? 1: 0;
 
     //Timer 2 : 10us Timer 10us 주기 (trig 신호가 10us 동안 유지됨)
@@ -72,7 +74,7 @@ module UltrasonicDistanceFSM(
         end
         else if(curr_state == WAIT)begin
             cnt460us <= cnt460us +1;
-            if( cnt460us == (46000 - 1)) begin
+            if( cnt460us == (46000)) begin // 46000 -1 => 46000 크다고해서 변경
                 cnt460us <= 0;
             end
         end
@@ -81,7 +83,7 @@ module UltrasonicDistanceFSM(
         end
     end
     wire tWait;
-    assign tWait = (cnt460us == (46000 - 1))? 1: 0;
+    assign tWait = (cnt460us == (46000))? 1: 0;
 
     //Timer 4 : Measurement time 18ms
     //echo 신호가 1에서 0으로 바뀌는 그 구간을 거리 측정할떄 사용한다.
@@ -174,3 +176,4 @@ module UltrasonicDistanceFSM(
     end
     assign trig = (curr_state == TRIG) ? 1 : 0;
 endmodule
+
