@@ -1,5 +1,14 @@
 # Ultrasonic FSM
 
+## 구현 방법
+
+1. define state
+2. current state logic
+3. next state logic
+4. output logic
+5. timer logic
+6. test bench
+
 ## FSM
 - 각 상태 정의 및 TIMING 설계
   
