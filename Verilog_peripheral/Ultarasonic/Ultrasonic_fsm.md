@@ -129,4 +129,5 @@ Echo 신호:  ______|‾‾‾‾‾‾‾‾‾‾|______
 
 ## Operation
 
+<img width="551" height="416" alt="image" src="https://github.com/user-attachments/assets/f4b57bf8-3f29-466d-b584-ec9777312517" />
 
