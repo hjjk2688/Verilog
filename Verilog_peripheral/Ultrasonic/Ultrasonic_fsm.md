@@ -1,6 +1,6 @@
 # Ultrasonic FSM
 
-## 구현 단계
+## FSM 구현 단계
 
 1. define state
 2. current state logic
