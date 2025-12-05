@@ -2,7 +2,7 @@
 
 이 문서는 AXI-Lite IP에서 하드웨어(FPGA 로직)에 의해 지속적으로 업데이트되고, 프로세서(MicroBlaze)에게는 읽기 전용으로 제공되는 레지스터(`slv_reg0`)를 구현하는 방법에 대해 상세히 설명합니다.
 
-## 1. `slv_reg0` 업데이트 방식에 대한 제안 분석
+## 1. `slv_reg0` 업데이트 방식에 대한 분석
 
 `myip_ultrasonic_fsm_v1_0_S00_AXI.v` 파일의 AXI Write 로직(`always @(posedge S_AXI_ACLK)` 블록) 내 `if (slv_reg_wren)` 문의 `else` 브랜치에 `slv_reg0[13:0] <= digit_for_display;`와 같이 값을 할당하는 방식이 안좋은 이유
 
