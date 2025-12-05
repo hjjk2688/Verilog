@@ -1,0 +1,53 @@
+# Ultrasonic_FSM_xdc
+
+<img width="1619" height="318" alt="image" src="https://github.com/user-attachments/assets/ef7e75e6-7745-4598-a7e5-a9f525e68102" />
+
+<img width="1615" height="373" alt="image" src="https://github.com/user-attachments/assets/20e876a4-a460-4033-bbf8-f5f3f428f6c6" />
+
+
+```
+set_property IOSTANDARD LVCMOS33 [get_ports {AN[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {AN[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {AN[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {AN[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {curr_state_led[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {curr_state_led[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {curr_state_led[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {curr_state_led[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {curr_state_led[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {curr_state_led[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[6]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[5]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[4]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[3]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {dec_out[0]}]
+set_property IOSTANDARD LVCMOS33 [get_ports clk]
+set_property IOSTANDARD LVCMOS33 [get_ports echo]
+set_property IOSTANDARD LVCMOS33 [get_ports led_1hz]
+set_property IOSTANDARD LVCMOS33 [get_ports rst]
+set_property IOSTANDARD LVCMOS33 [get_ports trig]
+set_property PACKAGE_PIN W5 [get_ports clk]
+set_property PACKAGE_PIN U16 [get_ports led_1hz]
+set_property PACKAGE_PIN U18 [get_ports rst]
+set_property PACKAGE_PIN J3 [get_ports trig]
+set_property PACKAGE_PIN L3 [get_ports echo]
+set_property PACKAGE_PIN W3 [get_ports {curr_state_led[0]}]
+set_property PACKAGE_PIN U3 [get_ports {curr_state_led[1]}]
+set_property PACKAGE_PIN P3 [get_ports {curr_state_led[2]}]
+set_property PACKAGE_PIN N3 [get_ports {curr_state_led[3]}]
+set_property PACKAGE_PIN P1 [get_ports {curr_state_led[4]}]
+set_property PACKAGE_PIN L1 [get_ports {curr_state_led[5]}]
+set_property PACKAGE_PIN W7 [get_ports {dec_out[6]}]
+set_property PACKAGE_PIN W6 [get_ports {dec_out[5]}]
+set_property PACKAGE_PIN U8 [get_ports {dec_out[4]}]
+set_property PACKAGE_PIN V8 [get_ports {dec_out[3]}]
+set_property PACKAGE_PIN U5 [get_ports {dec_out[2]}]
+set_property PACKAGE_PIN V5 [get_ports {dec_out[1]}]
+set_property PACKAGE_PIN U7 [get_ports {dec_out[0]}]
+set_property PACKAGE_PIN W4 [get_ports {AN[3]}]
+set_property PACKAGE_PIN V4 [get_ports {AN[2]}]
+set_property PACKAGE_PIN U4 [get_ports {AN[1]}]
+set_property PACKAGE_PIN U2 [get_ports {AN[0]}]
+```
