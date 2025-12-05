@@ -20,8 +20,9 @@
 1GHz => 1G*4B => 4G => 4MB(1ms 일때 4M byte를 처리할수있다 => 예시로 확인한거처럼 18ms는 cpu에게 엄청 긴 시간이다.)
 
 2. 각 상태별로 timer가 존재하며 총 4개가 필요하다.
-</br>
-</br>
+
+3. echo 1 -> 0 으로 measure 구간을 정의하고 거리 계산에 이용한다.
+
 
 - Using Oscilloscope 
 
