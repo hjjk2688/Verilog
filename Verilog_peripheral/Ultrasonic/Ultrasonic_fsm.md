@@ -101,6 +101,11 @@ assign trigEn = trigEn_ext | (cnt1s == (100_000_000 - 1)); // 테스트 벤치�
 ```
 - trigEn 로 측정을 시작하고 echo 를 통해 측정하는 단계로 넘어감 echo 0 이되면 대기상태로 들어간다.
 
+<img width="1465" height="927" alt="image" src="https://github.com/user-attachments/assets/b2e4a6ef-91a7-4c6e-a008-5eaca5764b95" />
+
+<img width="779" height="489" alt="image" src="https://github.com/user-attachments/assets/92de2225-48fb-4a79-bbbd-21ff2355641a" />
+
+
 ---
 ### 초음파 거리 측정 방법
 
