@@ -103,7 +103,8 @@ assign trigEn = trigEn_ext | (cnt1s == (100_000_000 - 1)); // 테스트 벤치�
 
 <img width="1465" height="927" alt="image" src="https://github.com/user-attachments/assets/b2e4a6ef-91a7-4c6e-a008-5eaca5764b95" />
 
-<img width="779" height="489" alt="image" src="https://github.com/user-attachments/assets/92de2225-48fb-4a79-bbbd-21ff2355641a" />
+<img width="1361" height="848" alt="image" src="https://github.com/user-attachments/assets/21d87f4d-a476-4b5c-99fe-f461bd1fd0cc" />
+
 
 
 ---
