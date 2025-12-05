@@ -104,5 +104,27 @@ AXI IP를 만드는 현재 상황에서는 UltrasonicDistanceDisplay 모듈이 �
   그때는 UltrasonicDistanceDisplay.v 파일이 유용하게 쓰일 수 있습니다.
 
 ---
+tcl 뽑기
+  방법 1: Vivado GUI 메뉴 사용 (가장 쉬운 방법)
+
+
+   1. Tcl로 만들고 싶은 Vivado 프로젝트를 엽니다.
+   2. 상단 메뉴에서 `File` → `Project` → `Write Tcl...` 을 클릭합니다.
+   3. Write Project to Tcl 대화상자가 나타나면 아래와 같이 설정합니다.
+
+
+       - Tcl file name: 생성할 Tcl 파일의 이름과 경로를 지정합니다. (예:
+         C:/Users/45/Desktop/create_my_project.tcl)
+       - `Copy sources to new project`: 이 옵션을 선택하는 것을 강력히 추천합니다. 프로젝트에 사용된 모든
+         Verilog 소스 파일(.v), 제약 파일(.xdc), IP 설정 등을 Tcl 파일과 함께 sources라는 폴더에 깔끔하게
+         복사해줍니다. 이렇게 하면 Tcl 스크립트와 sources 폴더만 있으면 어디서든 프로젝트를 완벽하게 복원할
+         수 있습니다.
+       - `Recreate Block Design using Tcl`: 반드시 체크해야 합니다. 이 옵션을 체크해야 MicroBlaze와 AXI IP
+         등을 연결한 Block Design을 스크립트로 복원할 수 있습니다.
+
+   4. OK 버튼을 누릅니다.
+
+
+---
 
   <img width="909" height="416" alt="image" src="https://github.com/user-attachments/assets/e3a6d7c1-98f0-42d0-bfb6-963347707274" />
