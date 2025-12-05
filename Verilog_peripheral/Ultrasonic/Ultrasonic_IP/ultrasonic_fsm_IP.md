@@ -178,19 +178,17 @@ tcl 뽑기
    3. 현재 Tcl 스크립트를 실행하려는 위치로 그 `sources_1` 폴더를 통째로 복사하거나 이동하세요.
 
   올바른 폴더 구조 예시:
+```
+    my_tcl_project/
+    ├── create_project.tcl      <-- 실행하려는 Tcl 스크립트
+    └── sources_1/              <-- Tcl 스크립트와 함께 있어야 하는 소스 폴더
+        ├── hdl/
+        │   ├── myip_ultrasonic_fsm_v1_0.v
+        │   └── ...
+        └── ip/
+            └── ...
 
-
-
-   1 my_tcl_project/
-   2 ├── create_project.tcl      <-- 실행하려는 Tcl 스크립트
-   3 └── sources_1/              <-- Tcl 스크립트와 함께 있어야 하는 소스 폴더
-   4     ├── hdl/
-   5     │   ├── myip_ultrasonic_fsm_v1_0.v
-   6     │   └── ...
-   7     └── ip/
-   8         └── ...
-
-
+```
 
   위와 같이 구조를 맞춘 후, my_tcl_project 폴더로 이동해서 source create_project.tcl 명령을 다시 실행해
   보세요. 이번에는 하위 모듈 파일들을 정상적으로 찾아서 프로젝트를 생성할 것입니다.
