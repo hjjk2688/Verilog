@@ -1,5 +1,7 @@
 # Ultrasonic FSM
 
+- Basys3 Board
+
 ## FSM 구현 단계
 
 1. define state
