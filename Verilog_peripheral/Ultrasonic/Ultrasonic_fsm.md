@@ -50,7 +50,58 @@ TENMS (10ms 대기)
     ↓ t10ms>=10ms
 IDLE (1초 대기 후 다시 측정)
 ```
+---
+### FSM 상태 확인을 위한 Simulation
 
+#### Testbench
+```Verilog
+module tb_simple();
+    reg clk, rst, trigEn_ext, echo;
+    wire trig;
+    wire [9:0] distance_cm_out;
+    wire [2:0] curr_state_out;
+    wire led_1hz;
+    
+    UltrasonicDistanceFSM dut (
+        .clk(clk),
+        .rst(rst),
+        .trigEn_ext(trigEn_ext),  // 외부 트리거
+        .trig(trig),
+        .echo(echo),
+        .distance_cm_out(distance_cm_out),
+        .curr_state_out(curr_state_out),
+        .led_1hz(led_1hz)
+    );
+    
+    initial begin
+        clk = 0;
+        rst = 1;
+        trigEn_ext = 0;  // 초기값 0
+        echo = 0;
+        
+        #100 rst = 0;
+        
+        #100 trigEn_ext = 1;  // 1 클럭만 HIGH
+        // Echo 응답
+        #462_0000 echo = 1;
+        //  #25_000_100 echo = 0; // ns 기준 임 
+        #18_000_000 echo = 0 ;   
+        
+        //#20000;
+        // $finish;
+    end
+    
+    always #5 clk = ~clk;
+endmodule
+```
+```Verilgo
+input trigEn_ext, // 테스트벤치용 시뮬레이션에서 trigEn 사용하기 위해 추가
+
+assign trigEn = trigEn_ext | (cnt1s == (100_000_000 - 1)); // 테스트 벤치할떄 만 사용 
+```
+- trigEn 로 측정을 시작하고 echo 를 통해 측정하는 단계로 넘어감 echo 0 이되면 대기상태로 들어간다.
+
+---
 ### 초음파 거리 측정 방법
 
 - trigger에서 신호가 나간 후 echo 에 도달하는 시간 이용
