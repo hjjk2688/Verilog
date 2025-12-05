@@ -1,6 +1,6 @@
 # Ultrasonic FSM
 
-## 구현 방법
+## 구현 단계
 
 1. define state
 2. current state logic
@@ -11,6 +11,8 @@
 
 ## FSM
 - 각 상태 정의 및 TIMING 설계
+
+<img width="963" height="589" alt="image" src="https://github.com/user-attachments/assets/9e411063-b9cb-4119-a2f2-4d5408d4532b" />
   
 <img width="1885" height="1130" alt="image" src="https://github.com/user-attachments/assets/148c4a48-fda0-4174-88e3-539debecf461" />
 
