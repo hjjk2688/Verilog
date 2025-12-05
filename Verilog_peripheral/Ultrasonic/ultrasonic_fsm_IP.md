@@ -65,6 +65,70 @@
   만들어주고, `always` 블록을 통해 직접 출력을 제어해야 할 때만 예외적으로 `output reg`를 사용한다고
   생각하시면 됩니다.
 
+---
+
+AXI IP를 만드는 현재 상황에서는 UltrasonicDistanceDisplay 모듈이 더 이상 필요하지 않습니다.
+
+  그 이유는 다음과 같습니다.
+
+
+   1. 역할의 대체:
+       - 기존의 UltrasonicDistanceDisplay 모듈의 역할은 UltrasonicDistanceFSM과 _4_DIGIT_DISPLAY라는 두
+         부품을 가져와서 서로 연결해주는 단순한 껍데기(Wrapper) 였습니다.
+       - 이제는 myip_ultrasonic_fsm_v1_0_S00_AXI.v 파일이 그 역할을 대신하게 되었습니다. 이 새로운 AXI IP
+         파일이 두 부품을 가져와 연결하고, 거기에 더해 프로세서(MicroBlaze)와의 통신 기능까지 추가한 더
+         똑똑하고 기능이 많은 껍데기가 된 것입니다.
+
+
+   2. 신호 접근성:
+       - 프로세서가 거리 값을 읽으려면 distance_cm_out 신호에 직접 접근해야 합니다.
+       - UltrasonicDistanceDisplay 모듈을 통째로 사용하면 이 신호가 모듈 내부에 숨겨지게 되므로, AXI IP가 이
+         값을 읽어올 수 없습니다.
+       - 따라서 AXI IP 파일 안에서 두 하위 모듈을 직접 불러와야 distance_cm_out 신호를 AXI 레지스터에 연결할
+         수 있습니다.
+
+
+  ---
+
+  요약:
+
+
+  기존의 UltrasonicDistanceDisplay는 '단순 포장지'였다면, 새로운 AXI IP(..._S00_AXI.v)는 '프로세서와 통신
+  기능이 추가된 스마트 포장지'가 된 셈입니다. 따라서 더 좋은 포장지가 생겼으니 기존의 단순 포장지는 이번 IP
+  제작 과정에서는 필요가 없습니다.
+
+
+  다만, 나중에 MicroBlaze 없이 그냥 7-세그먼트에 거리만 표시하는 독립적인 프로젝트를 다시 만들고 싶다면,
+  그때는 UltrasonicDistanceDisplay.v 파일이 유용하게 쓰일 수 있습니다.
+
+---
+<img width="469" height="463" alt="image" src="https://github.com/user-attachments/assets/8da6e74c-8eda-49fb-aa73-d853605da977" />
+
+<img width="532" height="445" alt="image" src="https://github.com/user-attachments/assets/7f29208e-6178-4d10-a876-78f82eaae221" />
+
+
+tcl 뽑기
+  방법 1: Vivado GUI 메뉴 사용 (가장 쉬운 방법)
+
+
+   1. Tcl로 만들고 싶은 Vivado 프로젝트를 엽니다.
+   2. 상단 메뉴에서 `File` → `Project` → `Write Tcl...` 을 클릭합니다.
+   3. Write Project to Tcl 대화상자가 나타나면 아래와 같이 설정합니다.
+
+
+       - Tcl file name: 생성할 Tcl 파일의 이름과 경로를 지정합니다. (예:
+         C:/Users/45/Desktop/create_my_project.tcl)
+       - `Copy sources to new project`: 이 옵션을 선택하는 것을 강력히 추천합니다. 프로젝트에 사용된 모든
+         Verilog 소스 파일(.v), 제약 파일(.xdc), IP 설정 등을 Tcl 파일과 함께 sources라는 폴더에 깔끔하게
+         복사해줍니다. 이렇게 하면 Tcl 스크립트와 sources 폴더만 있으면 어디서든 프로젝트를 완벽하게 복원할
+         수 있습니다.
+       - `Recreate Block Design using Tcl`: 반드시 체크해야 합니다. 이 옵션을 체크해야 MicroBlaze와 AXI IP
+         등을 연결한 Block Design을 스크립트로 복원할 수 있습니다.
+
+   4. OK 버튼을 누릅니다.
+---
+
+
   
   
   Tcl 스크립트의 동작 방식
@@ -130,64 +194,6 @@
 
   위와 같이 구조를 맞춘 후, my_tcl_project 폴더로 이동해서 source create_project.tcl 명령을 다시 실행해
   보세요. 이번에는 하위 모듈 파일들을 정상적으로 찾아서 프로젝트를 생성할 것입니다.
-
----
-
-AXI IP를 만드는 현재 상황에서는 UltrasonicDistanceDisplay 모듈이 더 이상 필요하지 않습니다.
-
-  그 이유는 다음과 같습니다.
-
-
-   1. 역할의 대체:
-       - 기존의 UltrasonicDistanceDisplay 모듈의 역할은 UltrasonicDistanceFSM과 _4_DIGIT_DISPLAY라는 두
-         부품을 가져와서 서로 연결해주는 단순한 껍데기(Wrapper) 였습니다.
-       - 이제는 myip_ultrasonic_fsm_v1_0_S00_AXI.v 파일이 그 역할을 대신하게 되었습니다. 이 새로운 AXI IP
-         파일이 두 부품을 가져와 연결하고, 거기에 더해 프로세서(MicroBlaze)와의 통신 기능까지 추가한 더
-         똑똑하고 기능이 많은 껍데기가 된 것입니다.
-
-
-   2. 신호 접근성:
-       - 프로세서가 거리 값을 읽으려면 distance_cm_out 신호에 직접 접근해야 합니다.
-       - UltrasonicDistanceDisplay 모듈을 통째로 사용하면 이 신호가 모듈 내부에 숨겨지게 되므로, AXI IP가 이
-         값을 읽어올 수 없습니다.
-       - 따라서 AXI IP 파일 안에서 두 하위 모듈을 직접 불러와야 distance_cm_out 신호를 AXI 레지스터에 연결할
-         수 있습니다.
-
-
-  ---
-
-  요약:
-
-
-  기존의 UltrasonicDistanceDisplay는 '단순 포장지'였다면, 새로운 AXI IP(..._S00_AXI.v)는 '프로세서와 통신
-  기능이 추가된 스마트 포장지'가 된 셈입니다. 따라서 더 좋은 포장지가 생겼으니 기존의 단순 포장지는 이번 IP
-  제작 과정에서는 필요가 없습니다.
-
-
-  다만, 나중에 MicroBlaze 없이 그냥 7-세그먼트에 거리만 표시하는 독립적인 프로젝트를 다시 만들고 싶다면,
-  그때는 UltrasonicDistanceDisplay.v 파일이 유용하게 쓰일 수 있습니다.
-
----
-tcl 뽑기
-  방법 1: Vivado GUI 메뉴 사용 (가장 쉬운 방법)
-
-
-   1. Tcl로 만들고 싶은 Vivado 프로젝트를 엽니다.
-   2. 상단 메뉴에서 `File` → `Project` → `Write Tcl...` 을 클릭합니다.
-   3. Write Project to Tcl 대화상자가 나타나면 아래와 같이 설정합니다.
-
-
-       - Tcl file name: 생성할 Tcl 파일의 이름과 경로를 지정합니다. (예:
-         C:/Users/45/Desktop/create_my_project.tcl)
-       - `Copy sources to new project`: 이 옵션을 선택하는 것을 강력히 추천합니다. 프로젝트에 사용된 모든
-         Verilog 소스 파일(.v), 제약 파일(.xdc), IP 설정 등을 Tcl 파일과 함께 sources라는 폴더에 깔끔하게
-         복사해줍니다. 이렇게 하면 Tcl 스크립트와 sources 폴더만 있으면 어디서든 프로젝트를 완벽하게 복원할
-         수 있습니다.
-       - `Recreate Block Design using Tcl`: 반드시 체크해야 합니다. 이 옵션을 체크해야 MicroBlaze와 AXI IP
-         등을 연결한 Block Design을 스크립트로 복원할 수 있습니다.
-
-   4. OK 버튼을 누릅니다.
-
 
 ---
 
