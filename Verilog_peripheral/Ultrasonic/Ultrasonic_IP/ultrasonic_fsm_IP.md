@@ -118,7 +118,7 @@ int main ()
 	Xil_ICacheEnable();
 	Xil_DCacheEnable();
 
-	xil_printf("--- Ultrasonic Distance Measurement Program Started ---\r\n");
+	xil_printf("Program Start \r\n");
 	u32 reg_value; // 레지스터에서 읽어온 32비트 전체 값
 	u32 distance;  // 32비트 값에서 추출한 10비트 거리 값
 
@@ -138,4 +138,30 @@ int main ()
    return 0;
 }
 ```
+#### 캐시란?
 
+캐시는 프로세서와 메인 메모리(예: DDR RAM) 사이에 위치하는 작고 빠른 메모리입니다. 자주 사용되는 명령어와 데이터를 캐시에 저장하여, 
+프로세서가 메인 메모리까지 가지 않고도 빠르게 접근할 수 있도록 하여 전체 시스템의 성능을 크게 향상시킵니다.
+
+- ICache : 명령어 캐시 (Instruction Cache)
+- DCache : 데이터 캐시 (Data Cache)
+
+#### 캐시 활성화 이유
+캐시를 활성화하는 것은 임베디드 시스템, 특히 복잡한 소프트웨어나 운영체제를 실행할 때 성능에 매우 중요합니다. 
+캐시가 없으면 프로세서는 매번 느린 메인 메모리에서 명령어와 데이터를 가져와야 하므로, 프로그램 실행 속도가 현저히 느려집니다.
+
+## 프로그램 동작
+- baud rate
+
+<img width="472" height="428" alt="image" src="https://github.com/user-attachments/assets/82a9ea94-972f-4480-8221-a1cef6ace70a" />
+
+<img width="774" height="578" alt="image" src="https://github.com/user-attachments/assets/bc09aef8-1ebc-4b49-9c12-31d66163bf04" />
+
+<img width="818" height="501" alt="image" src="https://github.com/user-attachments/assets/7429f36b-61fc-406e-b8c3-02c11df08db3" />
+
+---
+
+### 개선 사항
+1. reg 를 나눠 enable 신호를 write를 하는부분을 추가한다.
+2. read 와 write 하는 부분을 나눔으로써 read / write 동작 원리를 확인한다
+https://github.com/hjjk2688/Verilog/blob/main/IP/AXI-Lite_R%26W.md
