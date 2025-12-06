@@ -150,6 +150,19 @@ int main ()
 캐시를 활성화하는 것은 임베디드 시스템, 특히 복잡한 소프트웨어나 운영체제를 실행할 때 성능에 매우 중요합니다. 
 캐시가 없으면 프로세서는 매번 느린 메인 메모리에서 명령어와 데이터를 가져와야 하므로, 프로그램 실행 속도가 현저히 느려집니다.
 
+#### REG_OFFSET
+1. `xparameters.h`에서 직접 확인: platform 프로젝트 -> microblaze_0 -> standalone_bsp_0 -> include -> xparameters.h 
+2. IP의 기본 주소(예: XPAR_MYIP_ULTRASONIC_FSM_0_S00_AXI_BASEADDR)를 검색합니다.
+
+- 슬레이브 레지스터(slv_reg0, slv_reg1, slv_reg2, slv_reg3)의 오프셋은 표준 AXI-Lite 오프셋을 따릅니다:
+	- slv_reg0는 BASEADDR + 0x0
+	- slv_reg1는 BASEADDR + 0x4
+	- slv_reg2는 BASEADDR + 0x8
+	- slv_reg3는 BASEADDR + 0xC
+
+
+
+
 ## 프로그램 동작
 - baud rate
 
