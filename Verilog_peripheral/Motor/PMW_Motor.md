@@ -42,8 +42,9 @@ G  -> G
 21 -> JA9:H2
 22 -> JA10:G3
 ```
+## vitis
 * 자신의 모터에 맞춰서 제어
-```
+```C
   motorReg[8] = (1 << 31) | period_val; // 우앞
   motorReg[9] = duty_val;
   motorReg[10] = 0;
