@@ -13,7 +13,8 @@
 
 ---
 ## code
-- ultrasonic.v를 사용하여 top module : UltrasonicDistanceDisplay 
+- ultrasonic.v를 사용
+  - TOP Module : UltrasonicDistanceDisplay 
 - 7_Segment code는 4_digit_display 사용
 
 ## 결과
