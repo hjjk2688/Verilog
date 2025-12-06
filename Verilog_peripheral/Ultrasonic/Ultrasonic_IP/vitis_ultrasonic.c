@@ -17,7 +17,7 @@ int main ()
 	Xil_ICacheEnable();
 	Xil_DCacheEnable();
 
-	xil_printf("--- Ultrasonic Distance Measurement Program Started ---\r\n");
+	xil_printf("Program Start \r\n");
 	u32 reg_value; // 레지스터에서 읽어온 32비트 전체 값
 	u32 distance;  // 32비트 값에서 추출한 10비트 거리 값
 
@@ -27,7 +27,7 @@ int main ()
 
 		xil_printf("Measured Distance: %d cm\r\n", distance);
 
-		sleep(1); // 초음파 신호가 1초마다 오니까 1초에 맞춰서 delay
+		sleep(1); // trig_En 1초마다 활성화 되기떄문에  1초 delay를 줘서 맞춰준다. 
 	}
 
 
