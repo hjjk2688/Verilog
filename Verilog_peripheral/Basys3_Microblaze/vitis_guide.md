@@ -134,6 +134,18 @@
 
 <img width="902" height="513" alt="image" src="https://github.com/user-attachments/assets/9adaba64-5abb-4ea5-b611-d9bafb4d20c9" />
 
+---
+
+#### 결과
+
 * TERA TERAM Result
 
 <img width="673" height="238" alt="image" src="https://github.com/user-attachments/assets/ddf1fc1c-3bab-40bc-88db-2147af280c1b" />
+
+<img width="798" height="593" alt="image" src="https://github.com/user-attachments/assets/a4366d07-2a78-4584-b493-9068f84c6403" />
+
+- button(U18) - inputrrupt & gpio 주소 TERA TERAM 출력
+- LED U16 ~ L1 까지 순차적으로 켜졌다 꺼진다.
+
+
+
