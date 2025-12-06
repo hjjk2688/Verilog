@@ -164,4 +164,7 @@ int main ()
 ### 개선 사항
 1. reg 를 나눠 enable 신호를 write를 하는부분을 추가한다.
 2. read 와 write 하는 부분을 나눔으로써 read / write 동작 원리를 확인한다
+
+참고 자료:
+
 https://github.com/hjjk2688/Verilog/blob/main/IP/AXI-Lite_R%26W.md
