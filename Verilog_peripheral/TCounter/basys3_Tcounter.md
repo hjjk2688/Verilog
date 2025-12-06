@@ -10,9 +10,15 @@
 <img width="1132" height="356" alt="image" src="https://github.com/user-attachments/assets/212f62f4-ba2b-4c38-b074-7b64daafe7cd" />
 
 
-* xdc 생성
+## xdc 생성
+
+<img width="474" height="696" alt="image" src="https://github.com/user-attachments/assets/98b259ab-043f-4f46-9ab2-ae8ae07a6bf3" />
+
+<img width="898" height="237" alt="image" src="https://github.com/user-attachments/assets/5666d444-999b-4048-9a3f-5b94fb194736" />
 
 <img width="1592" height="403" alt="image" src="https://github.com/user-attachments/assets/1f19ee56-0224-480f-ba70-6e7080c0226d" />
+
+- 설정 후 ctrl + s 로 저장 후 업데이트 ( 3.3V , Pin 할당)
 
 <img width="537" height="177" alt="image" src="https://github.com/user-attachments/assets/ac3170eb-fd36-4c3d-8aab-98c339ca05ef" />
 
@@ -39,6 +45,7 @@ Address 0x40000000
 <img width="517" height="391" alt="image" src="https://github.com/user-attachments/assets/a8ad765e-c776-47fb-915a-9885a855779e" />
 
 - button(U18) 누르면 TERA TERAM 출력
+- button 은 inttrup
 <img width="597" height="116" alt="image" src="https://github.com/user-attachments/assets/28937060-cd5a-4ff6-9b61-895125dfa17c" />
 
 ---
