@@ -1,5 +1,10 @@
 # basys3 module
 
+## GPIO
+
+<img width="704" height="674" alt="image" src="https://github.com/user-attachments/assets/d7ed06db-bc00-465e-a61e-2ba0f554a369" />
+
+
 ## Block Desgin
 
 <img width="1132" height="356" alt="image" src="https://github.com/user-attachments/assets/212f62f4-ba2b-4c38-b074-7b64daafe7cd" />
