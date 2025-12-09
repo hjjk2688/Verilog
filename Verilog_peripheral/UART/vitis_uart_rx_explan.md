@@ -1,4 +1,5 @@
 # UART 인터럽트 구현 가이드
+- uart ip module 사용
 
 > **환경**: Basys3 보드 + MicroBlaze Processor + Vitis 2022.2
 
