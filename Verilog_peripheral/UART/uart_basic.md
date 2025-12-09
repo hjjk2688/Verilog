@@ -41,9 +41,8 @@
 
 ## UART Frame Structure (8-N-1 Format)
 
-**Example: Transmitting 0x8F (10001111)**
+<img width="1124" height="467" alt="image" src="https://github.com/user-attachments/assets/5d11d911-3327-45d2-94d4-d5af125a56c7" />
 
-`IDLE (1)` → `START (0)` → `D0(1)` → `D1(1)` → `D2(1)` → `D3(1)` → `D4(0)` → `D5(0)` → `D6(0)` → `D7(1)` → `STOP (1)` → `IDLE (1)`
 
 <br>
 
@@ -55,47 +54,12 @@
 
 ---
 
-## State Transition Details
+## 상태 전환
 
-<div style="background-color: #1e3a8a; border-left: 4px solid #3b82f6; padding: 1rem; border-radius: 0.25rem; margin-bottom: 0.75rem;">
-  <p style="font-weight: bold; color: #bfdbfe;">TX_IDLE → TX_START</p>
-  <p style="font-size: 0.875rem; color: #dbeafe; margin-top: 0.5rem;">
-    <strong>Condition:</strong> tx_start_en = 1<br>
-    <strong>Action:</strong> Load input_tx_data into tx_data, reset tx_data_cnt to 0
-  </p>
-</div>
+<img width="1122" height="624" alt="image" src="https://github.com/user-attachments/assets/30e716f6-37ca-488e-b014-2bbed093b84f" />
 
-<div style="background-color: #431407; border-left: 4px solid #f97316; padding: 1rem; border-radius: 0.25rem; margin-bottom: 0.75rem;">
-  <p style="font-weight: bold; color: #fcd34d;">TX_START → TX_DATA</p>
-  <p style="font-size: 0.875rem; color: #fed7aa; margin-top: 0.5rem;">
-    <strong>Condition:</strong> baud_rate = 1 (one baud period elapsed)<br>
-    <strong>Action:</strong> Start bit (tx=0) transmission complete, begin data transmission
-  </p>
-</div>
 
-<div style="background-color: #042f2e; border-left: 4px solid #10b981; padding: 1rem; border-radius: 0.25rem; margin-bottom: 0.75rem;">
-  <p style="font-weight: bold; color: #a7f3d0;">TX_DATA → TX_DATA (Self-loop)</p>
-  <p style="font-size: 0.875rem; color: #d1fae5; margin-top: 0.5rem;">
-    <strong>Condition:</strong> baud_rate = 1 AND tx_data_cnt ≠ 7<br>
-    <strong>Action:</strong> Shift tx_data right by 1, increment tx_data_cnt, send next bit
-  </p>
-</div>
 
-<div style="background-color: #042f2e; border-left: 4px solid #a855f7; padding: 1rem; border-radius: 0.25rem; margin-bottom: 0.75rem;">
-  <p style="font-weight: bold; color: #e9d5ff;">TX_DATA → TX_STOP</p>
-  <p style="font-size: 0.875rem; color: #f3e8ff; margin-top: 0.5rem;">
-    <strong>Condition:</strong> baud_rate = 1 AND tx_data_cnt = 7<br>
-    <strong>Action:</strong> All 8 data bits transmitted, send stop bit (tx=1)
-  </p>
-</div>
-
-<div style="background-color: #3c096c; border-left: 4px solid #3b82f6; padding: 1rem; border-radius: 0.25rem;">
-  <p style="font-weight: bold; color: #bfdbfe;">TX_STOP → TX_IDLE</p>
-  <p style="font-size: 0.875rem; color: #dbeafe; margin-top: 0.5rem;">
-    <strong>Condition:</strong> baud_rate = 1<br>
-    <strong>Action:</strong> Stop bit transmission complete, return to idle, ready for next byte
-  </p>
-</div>
 
 ## Simulation
 
