@@ -314,157 +314,6 @@ YAT의 커맨드 입력창에 아래와 같이 입력하고 Send 버튼을 누�
 
 ---
 
-## 주요 타이밍 포인트
-
-### 왜 MID_BIT에서 샘플링해야 하는가?
-
-#### 1. 신호 안정성
-- 비트가 전환되는 순간(0% 또는 100% 지점)에는 신호가 불안정할 수 있음
-- **중간 지점(50%)**은 신호가 가장 안정적인 구간
-
-#### 2. 타이밍 오차 허용
-- 송신기와 수신기의 클럭이 완벽하게 일치하지 않을 수 있음
-- 중간에서 샘플링하면 **±50% 오차까지 허용** 가능
-
-```
-송신 비트:  ┌──────────┐
-           │          │
-           └──────────┘
-           |    ↑     |
-        시작   중간   끝
-        
-- 끝에서 샘플링: 다음 비트와 겹칠 위험 ❌
-- 중간에서 샘플링: 안전한 구간 ✅
-```
-
----
-
-## Verilog 구현 예제
-
-```verilog
-module uart_rx(  
-    input clk,
-    input rst,
-    input rx,
-    output reg [7:0] rx_data
-);
-
-    localparam [1:0] RX_IDLE = 2'b00,
-                     RX_START = 2'b01,
-                     RX_DATA = 2'b10,
-                     RX_STOP = 2'b11;
-    
-    parameter CLOCK_SPEED = 100_000_000;
-    parameter BAUD_RATE = 9600;
-    parameter CLOCKS_PER_BIT = CLOCK_SPEED / BAUD_RATE;
-   
-    reg [1:0] curr_state, next_state;
-    
-    // 상태 레지스터
-    always @(posedge clk or posedge rst) begin
-        if(rst) begin
-            curr_state <= RX_IDLE;
-        end
-        else begin
-            curr_state <= next_state;
-        end
-    end
-
-    // 비트 카운터
-    reg [13:0] bit_cnt;
-    always @(posedge clk or posedge rst) begin
-        if(rst) begin
-            bit_cnt <= 0;
-        end
-        else if(curr_state == RX_IDLE) begin
-            bit_cnt <= 0;
-        end
-        else begin
-            bit_cnt <= bit_cnt + 1;
-            if(bit_cnt >= CLOCKS_PER_BIT - 1) begin
-                bit_cnt <= 0;
-            end
-        end
-    end
-    
-    // 타이밍 신호
-    wire baud_rate = (bit_cnt == CLOCKS_PER_BIT - 1) ? 1'b1 : 1'b0;
-    wire mid_bit = (bit_cnt == (CLOCKS_PER_BIT / 2) - 1) ? 1'b1 : 1'b0;
-
-    // 데이터 수신 로직 - 비트 인덱스 방식
-    reg [2:0] rx_data_index;
-    
-    always @(posedge clk or posedge rst) begin
-        if(rst) begin
-            rx_data <= 8'b0;
-            rx_data_index <= 3'b0;
-        end
-        else begin          
-            case(curr_state)
-                RX_IDLE: begin
-                    rx_data_index <= 3'b0;
-                end
-                
-                RX_DATA: begin
-                    if(mid_bit) begin
-                        // 받는 즉시 해당 비트 위치에 저장
-                        rx_data[rx_data_index] <= rx;
-                        rx_data_index <= rx_data_index + 1;
-                    end
-                end
-            endcase
-        end
-    end
-
-    // 상태 전환 로직 (FSM)
-    always @(*) begin
-        next_state = curr_state;
-        
-        case(curr_state)
-            RX_IDLE: begin
-                // Falling Edge 감지
-                if(rx == 1'b0) begin
-                    next_state = RX_START;
-                end            
-            end
-            
-            RX_START: begin
-                // Start Bit 중간 지점 확인 (노이즈 필터링)
-                if(mid_bit) begin
-                    if(rx == 1'b0) begin
-                        next_state = RX_DATA;
-                    end
-                    else begin
-                        next_state = RX_IDLE;  // 노이즈
-                    end
-                end
-            end
-            
-            RX_DATA: begin
-                // 8비트 수신 완료
-                if(mid_bit && rx_data_index == 3'd7) begin
-                    next_state = RX_STOP;
-                end
-            end
-            
-            RX_STOP: begin
-                // Stop Bit 구간 대기
-                if(baud_rate) begin                    
-                    next_state = RX_IDLE;
-                end
-            end
-            
-            default: begin
-                next_state = RX_IDLE;
-            end   
-        endcase
-    end
-    
-endmodule
-```
-
----
-
 ## 요약
 
 | 단계 | 핵심 동작 | 타이밍 |
@@ -504,9 +353,9 @@ endmodule
 
 ## 문제해결 방법
 
-# UART 샘플링 - 왜 MID_BIT로 해야 하는가?
+## UART 샘플링 - 왜 MID_BIT로 해야 하는가?
 
-## UART 비트 타이밍
+### UART 비트 타이밍 (주요 타이밍 포인트)
 
 UART에서 각 비트는 일정 시간(baud rate 주기) 동안 유지됩니다:
 
@@ -557,7 +406,7 @@ RX_DATA:
 - **START 비트**: mid_bit에서 확인 → 다음 상태로 전환
 - **DATA 비트**: baud_rate(끝)에서 샘플링
 
-이렇게 하면 첫 데이터 비트는 **반 비트 늦게 샘플링**되어 **한 칸씩 밀리는 현상**이 발생합니다!
+이렇게 하면 첫 데이터 비트는 **반 비트 늦게 샘플링**되어 **한 칸씩 밀리는 현상**이 발생합니다.
 
 ## 올바른 방법
 
@@ -570,7 +419,7 @@ RX_DATA:
         rx_data[...] <= rx;
 ```
 
-**모든 비트를 일관되게 중간에서 샘플링**해야 타이밍이 정확히 맞습니다!
+**모든 비트를 일관되게 중간에서 샘플링**해야 타이밍이 정확히 맞는다.
 
 ## 타이밍 다이어그램 예시
 
@@ -635,4 +484,4 @@ end
 
 ---
 
-**결론**: UART 수신에서는 START 비트, DATA 비트, STOP 비트 모두 **비트 중간(MID_BIT)**에서 샘플링하는 것이 표준이며, 이것이 가장 안정적이고 정확한 방법입니
+**결론**: UART 수신에서는 START 비트, DATA 비트, STOP 비트 모두 **비트 중간(MID_BIT)**에서 샘플링하는 것이 표준이며, 이것이 가장 안정적이 방법이다.
