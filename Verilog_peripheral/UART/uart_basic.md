@@ -145,55 +145,350 @@ endmodule
 
 # UART RX
 
-TX와 RX의 가장 큰 차이점: 동기화
+## TX와 RX의 가장 큰 차이점: 동기화
 
+### TX (송신)
+- 송신기가 주체이므로, 시스템 클럭에 맞춰 비트를 내보내면 됨
+- 타이밍을 완전히 제어 가능
 
-   * TX (송신): 내가 주체이므로, 내 시스템 클럭에 맞춰 비트를 내보내면 됩니다.
-   * RX (수신): 상대방이 언제 보낼지 모르는 비동기 신호(i_rx_serial)를 수신해야 합니다. 따라서, 상대방의
-     신호에 내 클럭을 동기화하는 과정이 핵심입니다.
+### RX (수신)
+- 상대방이 언제 보낼지 모르는 비동기 신호를 수신해야 함
+- **상대방의 신호에 내 클럭을 동기화하는 과정이 핵심**
 
-  1단계: Start Bit 감지 및 동기화 (가장 중요)
+---
 
+## UART RX 구현 4단계
 
-  상대방이 보낸 Start Bit의 중간 지점을 정확히 찾아내는 것이 모든 것의 시작입니다. 노이즈로 인한 오작동을
-  막기 위해 "오버샘플링(Oversampling)" 기법을 사용합니다.
+### 1단계: Start Bit 감지 및 동기화 (가장 중요)
 
+상대방이 보낸 Start Bit의 중간 지점을 정확히 찾아내는 것이 모든 것의 시작입니다. 노이즈로 인한 오작동을 막기 위해 **오버샘플링(Oversampling)** 기법을 사용합니다.
 
-   1. Falling Edge 감지: 평소 HIGH 상태인 i_rx_serial 신호가 LOW로 떨어지는 순간을 감지합니다.
-   2. Start Bit 확인: 떨어지는 순간 바로 믿지 말고, 비트 주기의 절반 (`CLOCKS_PER_BIT / 2`) 만큼 기다립니다.
-   3. 중간 지점 샘플링: 절반을 기다린 후에도 i_rx_serial이 여전히 LOW라면, "아, 이건 진짜 Start Bit다"라고
-      확신합니다. 이 지점이 앞으로 모든 비트를 샘플링할 기준점이 됩니다. 만약 HIGH라면 노이즈였으므로 무시하고
-      다시 IDLE 상태로 돌아갑니다.
+#### 동작 순서
 
+1. **Falling Edge 감지**: 평소 HIGH 상태인 RX 신호가 LOW로 떨어지는 순간을 감지
+2. **Start Bit 확인**: 떨어지는 순간 바로 믿지 말고, 비트 주기의 절반(`CLOCKS_PER_BIT / 2`) 만큼 대기
+3. **중간 지점 샘플링**: 절반을 기다린 후에도 RX 신호가 여전히 LOW라면 진짜 Start Bit로 확신
+   - 이 지점이 앞으로 모든 비트를 샘플링할 **기준점**이 됨
+   - 만약 HIGH라면 노이즈였으므로 무시하고 IDLE 상태로 복귀
 
-  2단계: Data Bit 샘플링
+```
+     IDLE (HIGH)
+         │
+         ▼  Falling Edge 감지
+    ─────┐
+         └──────  START BIT (LOW)
+         ↑      ↑
+       감지   중간점 샘플링
+              (CLOCKS_PER_BIT / 2)
+```
 
-  Start Bit의 중간 지점을 찾았으면, 그로부터 정확히 1 비트 주기(`CLOCKS_PER_BIT`) 만큼 기다릴 때마다 각
-  데이터 비트의 중간에 도달하게 됩니다.
+---
 
+### 2단계: Data Bit 샘플링
 
-   1. Start Bit 중간에서 1 비트 주기만큼 기다린 후, i_rx_serial 값을 읽어 data[0]으로 저장합니다.
-   2. 다시 1 비트 주기만큼 기다린 후, i_rx_serial 값을 읽어 data[1]로 저장합니다.
-   3. 이 과정을 8번 반복하여 8비트 데이터를 모두 수신합니다.
+Start Bit의 중간 지점을 찾았으면, 그로부터 정확히 **1 비트 주기(`CLOCKS_PER_BIT`)** 만큼 기다릴 때마다 각 데이터 비트의 중간에 도달하게 됩니다.
 
-  3단계: 데이터 저장 (Shift Register)
+#### 동작 순서
 
-  수신된 데이터는 LSB부터 들어옵니다. 이를 올바른 바이트로 조립하기 위해 쉬프트 레지스터를 사용합니다.
+1. Start Bit 중간에서 1 비트 주기만큼 기다린 후, RX 값을 읽어 `data[0]`로 저장
+2. 다시 1 비트 주기만큼 기다린 후, RX 값을 읽어 `data[1]`로 저장
+3. 이 과정을 **8번 반복**하여 8비트 데이터를 모두 수신
 
+```
+START │ D0 │ D1 │ D2 │ D3 │ D4 │ D5 │ D6 │ D7 │ STOP
+  ↑     ↑    ↑    ↑    ↑    ↑    ↑    ↑    ↑     ↑
+ 중간  중간  중간  중간  중간  중간  중간  중간  중간  중간
+샘플링 지점
+```
 
-  rx_data_reg <= {i_rx_serial, rx_data_reg[7:1]};
+---
 
+### 3단계: 데이터 저장 (인덱스 방식)
 
-  위와 같이 코드를 작성하면, 새로 들어온 비트가 최상위 비트(MSB)로 들어가고 기존 비트들이 오른쪽으로 한
-  칸씩 밀려나, 8번 반복 후 rx_data_reg에 올바른 순서의 데이터가 완성됩니다.
+수신된 데이터는 **LSB부터** 들어옵니다. 비트를 받을 때마다 해당 인덱스 위치에 직접 저장합니다.
 
-  4단계: Stop Bit 확인 및 출력
+#### 동작 방식
 
+```verilog
+rx_data[rx_data_index] <= rx;
+rx_data_index <= rx_data_index + 1;
+```
 
-   * 8개의 데이터 비트를 모두 받은 후, 다시 1 비트 주기만큼 기다려 Stop Bit의 중간에 도달합니다.
-   * 이때 i_rx_serial 값이 HIGH인지 확인하여 통신이 정상적으로 끝났는지 검증합니다. (Framing Error 검출)
-   * 수신이 완료되면, o_rx_data_valid 같은 출력 신호를 1클럭 동안 HIGH로 만들어 외부에 "새로운 데이터가
-     도착했다"고 알려줍니다.
+- `rx_data_index`가 0부터 시작하여 7까지 증가
+- 각 비트가 도착할 때마다 해당 인덱스에 직접 저장
+- LSB first 순서대로 `rx_data[0]`부터 `rx_data[7]`까지 채워짐
+
+#### 동작 예시
+
+```
+수신 순서: D0 → D1 → D2 → D3 → D4 → D5 → D6 → D7 (LSB first)
+
+1번째 (index=0): rx_data[0] = D0 → [D0, x, x, x, x, x, x, x]
+2번째 (index=1): rx_data[1] = D1 → [D0, D1, x, x, x, x, x, x]
+3번째 (index=2): rx_data[2] = D2 → [D0, D1, D2, x, x, x, x, x]
+4번째 (index=3): rx_data[3] = D3 → [D0, D1, D2, D3, x, x, x, x]
+5번째 (index=4): rx_data[4] = D4 → [D0, D1, D2, D3, D4, x, x, x]
+6번째 (index=5): rx_data[5] = D5 → [D0, D1, D2, D3, D4, D5, x, x]
+7번째 (index=6): rx_data[6] = D6 → [D0, D1, D2, D3, D4, D5, D6, x]
+8번째 (index=7): rx_data[7] = D7 → [D0, D1, D2, D3, D4, D5, D6, D7] ✅
+```
+
+---
+
+### 4단계: Stop Bit 확인
+
+#### 동작 순서
+
+1. 8개의 데이터 비트를 모두 받은 후, Stop Bit 구간 동안 대기
+2. `baud_rate` 신호로 Stop Bit 끝을 감지
+3. IDLE 상태로 복귀하여 다음 데이터 수신 준비
+
+```verilog
+RX_STOP: begin
+    if(baud_rate) begin
+        next_state = RX_IDLE;
+    end
+end
+```
+
+---
+
+## 데이터 전송 과정
+
+### ASCII 문자 전송 예시: 'A'
+
+1. **PC (Tera Term)**: 키보드에서 'A'를 누름
+2. **터미널 프로그램**: 'A'에 해당하는 ASCII 코드 값 `65` (0x41)를 찾음
+3. **바이너리 변환**: 숫자 `65`를 8비트 이진수 `01000001`로 변환
+4. **UART 전송**: PC는 이 `01000001` 데이터를 UART 통신 규칙에 맞춰 1비트씩 순서대로 FPGA로 전송
+   - Start bit (1개) + Data bits (8개) + Stop bit (1개)
+5. **FPGA (uart_rx 모듈)**: 전송된 비트들을 차례대로 받아서 다시 8비트 데이터 `01000001`로 조립
+6. **LED 표시**: `rx_data` 레지스터에 저장된 `01000001`이 LED에 표시됨
+
+### 바이너리 값은 못 보내고 ASCII 문자만 보낼 수 있는가?
+
+**아니요, 모든 바이너리 값을 보낼 수 있습니다.**
+
+UART 통신은 본질적으로 **어떤 8비트 바이너리 값이든 보낼 수 있는** 통신 방식입니다. ASCII 코드는 그 바이너리 값으로 표현할 수 있는 여러 종류의 데이터 중 하나일 뿐입니다.
+
+- **Tera Term에서 키보드로 입력**: 프로그램이 기본 설정에 따라 키보드 문자를 ASCII 코드라는 규칙에 맞는 바이너리 값으로 변환하여 전송
+- **다른 방법으로 전송**: YAT 같은 전문 터미널 프로그램이나 Python, C++ 등으로 직접 만든 프로그램을 사용하면, 'A' 같은 문자가 아니라 `11110000` (0xF0) 같은 특정 바이너리 값을 직접 지정해서 전송 가능
+
+---
+
+## YAT에서 바이너리 값 보내기
+
+YAT의 커맨드 입력창에 아래와 같이 입력하고 Send 버튼을 누르면 됩니다.
+
+### 1. 바이너리(Binary)로 보내기
+
+```
+\b(11110000)
+```
+
+### 2. 16진수(Hex)로 보내기 (권장)
+
+`11110000`은 16진수로 `F0`입니다.
+
+```
+0xF0
+```
+
+또는
+
+```
+\h(F0)
+```
+
+### 3. 10진수(Decimal)로 보내기
+
+`11110000`은 10진수로 `240`입니다.
+
+```
+\d(240)
+```
+
+### 권장 방법
+
+대부분의 경우, **16진수로 표현하는 `0xF0` 방식**이 가장 짧고 직관적이라 많이 사용됩니다.
+
+---
+
+## 주요 타이밍 포인트
+
+### 왜 MID_BIT에서 샘플링해야 하는가?
+
+#### 1. 신호 안정성
+- 비트가 전환되는 순간(0% 또는 100% 지점)에는 신호가 불안정할 수 있음
+- **중간 지점(50%)**은 신호가 가장 안정적인 구간
+
+#### 2. 타이밍 오차 허용
+- 송신기와 수신기의 클럭이 완벽하게 일치하지 않을 수 있음
+- 중간에서 샘플링하면 **±50% 오차까지 허용** 가능
+
+```
+송신 비트:  ┌──────────┐
+           │          │
+           └──────────┘
+           |    ↑     |
+        시작   중간   끝
+        
+- 끝에서 샘플링: 다음 비트와 겹칠 위험 ❌
+- 중간에서 샘플링: 안전한 구간 ✅
+```
+
+---
+
+## Verilog 구현 예제
+
+```verilog
+module uart_rx(  
+    input clk,
+    input rst,
+    input rx,
+    output reg [7:0] rx_data
+);
+
+    localparam [1:0] RX_IDLE = 2'b00,
+                     RX_START = 2'b01,
+                     RX_DATA = 2'b10,
+                     RX_STOP = 2'b11;
+    
+    parameter CLOCK_SPEED = 100_000_000;
+    parameter BAUD_RATE = 9600;
+    parameter CLOCKS_PER_BIT = CLOCK_SPEED / BAUD_RATE;
+   
+    reg [1:0] curr_state, next_state;
+    
+    // 상태 레지스터
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
+            curr_state <= RX_IDLE;
+        end
+        else begin
+            curr_state <= next_state;
+        end
+    end
+
+    // 비트 카운터
+    reg [13:0] bit_cnt;
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
+            bit_cnt <= 0;
+        end
+        else if(curr_state == RX_IDLE) begin
+            bit_cnt <= 0;
+        end
+        else begin
+            bit_cnt <= bit_cnt + 1;
+            if(bit_cnt >= CLOCKS_PER_BIT - 1) begin
+                bit_cnt <= 0;
+            end
+        end
+    end
+    
+    // 타이밍 신호
+    wire baud_rate = (bit_cnt == CLOCKS_PER_BIT - 1) ? 1'b1 : 1'b0;
+    wire mid_bit = (bit_cnt == (CLOCKS_PER_BIT / 2) - 1) ? 1'b1 : 1'b0;
+
+    // 데이터 수신 로직 - 비트 인덱스 방식
+    reg [2:0] rx_data_index;
+    
+    always @(posedge clk or posedge rst) begin
+        if(rst) begin
+            rx_data <= 8'b0;
+            rx_data_index <= 3'b0;
+        end
+        else begin          
+            case(curr_state)
+                RX_IDLE: begin
+                    rx_data_index <= 3'b0;
+                end
+                
+                RX_DATA: begin
+                    if(mid_bit) begin
+                        // 받는 즉시 해당 비트 위치에 저장
+                        rx_data[rx_data_index] <= rx;
+                        rx_data_index <= rx_data_index + 1;
+                    end
+                end
+            endcase
+        end
+    end
+
+    // 상태 전환 로직 (FSM)
+    always @(*) begin
+        next_state = curr_state;
+        
+        case(curr_state)
+            RX_IDLE: begin
+                // Falling Edge 감지
+                if(rx == 1'b0) begin
+                    next_state = RX_START;
+                end            
+            end
+            
+            RX_START: begin
+                // Start Bit 중간 지점 확인 (노이즈 필터링)
+                if(mid_bit) begin
+                    if(rx == 1'b0) begin
+                        next_state = RX_DATA;
+                    end
+                    else begin
+                        next_state = RX_IDLE;  // 노이즈
+                    end
+                end
+            end
+            
+            RX_DATA: begin
+                // 8비트 수신 완료
+                if(mid_bit && rx_data_index == 3'd7) begin
+                    next_state = RX_STOP;
+                end
+            end
+            
+            RX_STOP: begin
+                // Stop Bit 구간 대기
+                if(baud_rate) begin                    
+                    next_state = RX_IDLE;
+                end
+            end
+            
+            default: begin
+                next_state = RX_IDLE;
+            end   
+        endcase
+    end
+    
+endmodule
+```
+
+---
+
+## 요약
+
+| 단계 | 핵심 동작 | 타이밍 |
+|------|----------|--------|
+| **IDLE** | Falling Edge 감지 | RX가 HIGH → LOW |
+| **START** | Start Bit 확인 (노이즈 필터링) | CLOCKS_PER_BIT / 2 (mid_bit) |
+| **DATA** | 8비트 데이터 수신 (인덱스 방식) | 비트마다 CLOCKS_PER_BIT / 2 (mid_bit) |
+| **STOP** | Stop Bit 구간 대기 | CLOCKS_PER_BIT (baud_rate) |
+
+### 핵심 원칙
+
+1. **모든 데이터 비트를 중간 지점에서 샘플링** (신호 안정성 + 오차 허용)
+2. **인덱스 방식으로 LSB first 순서대로 저장**
+3. **노이즈 필터링** (Start Bit를 중간 지점에서 재확인)
+4. **rx_data는 수신 완료 후 계속 유지** (다음 수신 시 덮어씌워짐)
+
+---
+
+## 참고사항
+
+- UART는 **비동기 통신**이므로 클럭 동기화가 핵심
+- **오버샘플링**으로 상대방의 타이밍에 맞춤
+- **인덱스 방식**은 직관적이며 LSB first 순서를 명확히 표현
+- Stop Bit에서 `baud_rate` 신호로 비트 끝을 감지하여 IDLE로 복귀
 
 
 ---
@@ -203,97 +498,6 @@ TX와 RX의 가장 큰 차이점: 동기화
 <img width="1634" height="468" alt="image" src="https://github.com/user-attachments/assets/ae00563e-773b-496b-8ec4-5b56492bd1dd" />
 
 
- 1. 아스키값이 바이너리값으로 변해서 들어가는가? (네, 맞습니다)
-
-
-  사용자님께서 이해하신 내용이 정확합니다. 전체 과정은 이렇습니다.
-
-
-   1. PC (Tera Term): 키보드에서 'A'를 누릅니다.
-   2. 터미널 프로그램: 'A'에 해당하는 아스키 코드 값 '65'를 찾습니다.
-   3. 바이너리 변환: 숫자 '65'를 8비트 이진수(바이너리) `01000001`로 변환합니다.
-   4. UART 전송: PC는 이 01000001 데이터를 UART 통신 규칙(시작 비트 1개, 데이터 8개, 정지 비트 1개)에 맞춰
-      1비트씩 순서대로 FPGA로 전송합니다.
-   5. FPGA (uart_rx 모듈): 전송된 비트들을 차례대로 받아서 다시 8비트 데이터 01000001로 조립하고, rx_data
-      레지스터에 저장합니다.
-
-  따라서 LED에 01000001이 표시되는 것이 정상입니다.
-
-
-  2. 바이너리 값은 못 보내고 아스키 문자만 보낼 수 있는가? (아니요, 모든 바이너리 값을 보낼 수 있습니다)
-
-
-  이 부분이 중요합니다. UART 통신은 본질적으로 어떤 8비트 바이너리 값이든 보낼 수 있는 통신 방식입니다.
-  아스키 코드는 그 바이너리 값으로 표현할 수 있는 여러 종류의 데이터 중 하나일 뿐입니다.
-
-
-   * Tera Term에서 키보드로 입력할 때: 프로그램이 약속(기본 설정)에 따라 키보드 문자를 아스키 코드라는 규칙에
-     맞는 바이너리 값으로 보내주는 것입니다.
-   * 다른 방법으로 보낼 때: YAT 같은 전문 터미널 프로그램이나 Python, C++ 등으로 직접 만든 프로그램을
-     사용하면, 'A' 같은 문자가 아니라 11110000 (0xF0) 같은 특정 바이너리 값을 직접 지정해서 보낼 수도
-     있습니다.
-
-  결론적으로, 제가 수정한 코드는 어떤 종류의 8비트 바이너리 값이 들어오든 상관없이, UART 통신 규칙(Stop Bit)만
-   정확히 지키면 모두 다 수신할 수 있도록 만든 것입니다.
-
-
-  따라서 수정된 코드는 아스키 문자뿐만 아니라 모든 종류의 8비트 바이너리 데이터를 수신할 수 있는 범용 UART
-  수신기가 맞습니다.
-
-╭──────────────────────────────────────────────────────────────────────────────────────╮
-│  > 그려면 yat에서 바이너리값 보낼려면 어떻게해야돼  ? \b{11110000} 이렇게하면되나 ?  │
-╰──────────────────────────────────────────────────────────────────────────────────────╯
-
-✦ 네, 아주 비슷하게 추측하셨습니다! YAT은 그런 기능을 당연히 지원하며, 매우 편리하게 되어있습니다.
-
-  사용자님이 추측하신 \b{} 와 거의 똑같지만, YAT에서는 괄호를 () 사용합니다.
-
-
-  YAT에서 바이너리 값 11110000 보내는 방법
-
-  YAT의 커맨드 입력창에 아래와 같이 입력하고 Send 버튼을 누르면 됩니다.
-
-  1. 바이너리(Binary)로 보내기
-
-
-
-   1 \b(11110000)
-
-
-  2. 16진수(Hex)로 보내기 (더 일반적이고 편리한 방법)
-
-
-  11110000은 16진수로 F0 입니다. YAT에서는 0x 접두사를 붙여서 보낼 수 있습니다.
-
-
-   1 0xF0
-
-
-  또는 \h() 구문을 사용할 수도 있습니다.
-
-
-   1 \h(F0)
-
-
-  3. 10진수(Decimal)로 보내기
-
-
-  11110000은 10진수로 240 입니다.
-
-
-   1 \d(240)
-
-
-  추천하는 방법
-
-  대부분의 경우, 16진수로 표현하는 `0xF0` 방식이 가장 짧고 직관적이라 많이 사용됩니다.
-
-
-  테스트 절차:
-   1. YAT을 켜고 FPGA의 COM 포트에 연결합니다 (9600, 8-N-1 설정).
-   2. 위쪽의 Send Text 입력창에 0xF0 이라고 입력합니다.
-   3. Send 버튼을 누릅니다.
-   4. FPGA 보드의 LED가 11110000으로 바뀌는지 확인합니다.
 
 
 ---
