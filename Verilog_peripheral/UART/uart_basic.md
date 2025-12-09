@@ -346,8 +346,16 @@ YAT의 커맨드 입력창에 아래와 같이 입력하고 Send 버튼을 누�
 
 <img width="1634" height="468" alt="image" src="https://github.com/user-attachments/assets/ae00563e-773b-496b-8ec4-5b56492bd1dd" />
 
+---
+## 결과
 
+- 'q' - ASCII : 0x71 / b'0111_0001
 
+<img width="597" height="442" alt="image" src="https://github.com/user-attachments/assets/43851bd8-34b4-4885-8399-24bc3f32933c" />
+
+- 'r' - ASCII : 0x72 / b'0111_0010 
+
+<img width="609" height="456" alt="image" src="https://github.com/user-attachments/assets/956cb8ee-86b3-4973-af0d-ab73ed94cfe1" />
 
 ---
 
